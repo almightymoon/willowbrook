@@ -28,15 +28,15 @@ Open the local URL printed by Vite. For a production build, run `npm run build`,
 | ? / slash | Controls |
 | Escape | Release mouse or close a menu |
 
-Desktop keyboard and mouse are required for gameplay. The interface adapts to narrow browser windows, but touch movement is not implemented.
+Desktop keyboard and mouse remain supported. On touch devices, drag the left virtual stick to walk, drag the scene to look around, and use Run, Jump, and Use on the right. The message card can be collapsed with its − button to keep the view clear.
 
 ## The town
 
-Eight enterable, furnished buildings, including The Honeycomb bakery and Fern & Fable; a fountain square, cobbled lanes, park pond, trees, flower beds, benches, lamps, six residents, and five collectible sunseeds. The three-chapter quest takes you from Mira to Bram to Theo. You can keep exploring after completing it.
+Eight enterable, furnished buildings, including The Honeycomb bakery and Fern & Fable; a fountain square, cobbled market lane, park pond, riverside gravel spur, forest-edge path, trees, flower beds, benches, lamps, route signs, six residents, and five collectible sunseeds. The three-chapter quest takes you from Mira to Bram to Theo. You can keep exploring after completing it.
 
 Closed doors and walls have collision. Roofs disappear when you enter buildings and the camera rises to give a clear view of the furnished room. The camera zooms inward when a building obstructs its view. Movement includes acceleration, running, gravity, jumping, and landing on low obstacles. The world has bounded edges.
 
-A full day lasts 12 minutes of active play. The settings panel offers morning, golden hour, night, a cycle toggle, graphics quality, and mouse sensitivity. Lamps and windows glow at night. Wind, bird/chirping tones, footsteps, and interaction chimes use Web Audio, enabled by the first user gesture.
+A full day lasts 12 minutes of active play. The settings panel offers morning, golden hour, night, a cycle toggle, graphics quality, and mouse sensitivity. Lamps and windows glow at night. Wind, bird/chirping tones, footsteps, and interaction chimes use Web Audio, enabled by the first user gesture. After you start moving, the quest card and control strip gently recede so the scene has room to breathe; a key press or interaction brings them back.
 
 Quest progress, collected items, day, and time are stored in browser localStorage. Each visit starts at the welcoming town entrance. Menus and conversations pause the simulation. To start over, clear this site's localStorage.
 
@@ -53,7 +53,7 @@ Browser screenshots and the verification report are saved under `tests/`. Sound 
 
 ## Source
 
-- `src/world.ts`: procedural town assets, buildings, residents, and colliders.
+- `src/world.ts`: procedural town assets, modeled playable adventurer, buildings, residents, and colliders.
 - `src/main.ts`: renderer, controller, camera, quests, interface, minimap, lighting, and persistence.
 - `src/audio.ts`: synthesized ambient and interaction audio.
 - `src/style.css`: responsive game interface.

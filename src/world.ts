@@ -7,6 +7,7 @@ export type Box = { x: number; z: number; w: number; d: number; top: number; ena
 export type Door = { name: string; pivot: THREE.Group; point: THREE.Vector3; open: boolean; angle: number };
 export type Resident = { name: string; role: string; model: THREE.Group; origin: THREE.Vector3; phase: number; roaming: boolean };
 export type Building = { name: string; x: number; z: number; w: number; d: number; roof: THREE.Group };
+export type CharacterCustomization = { jacket: number; shirt: number; backpack: number; hair: number; hat: boolean; hairstyle: 'short'|'bob'; accessory: 'none'|'scarf'|'badge' };
 export const material = realisticMaterial;
 export function box(parent: THREE.Object3D, w: number, h: number, d: number, x: number, y: number, z: number, color: string | number) {
   const m = new THREE.Mesh(projectUV(new THREE.BoxGeometry(w,h,d),x,y,z), material(color)); m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
@@ -24,7 +25,7 @@ export function sign(text: string, color='#fff2d4', background='#305647', width=
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
   return new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide}));
 }
-export function person(coat: number, hair=0x573e31, hat=false) {
+export function person(coat: number, hair=0x573e31, hat=false, backpack=0xc87935) {
   const g=new THREE.Group();
   const skin=new THREE.MeshStandardMaterial({color:0xd2a387,roughness:.72});
   const cloth=material(coat);cloth.roughness=.95;
@@ -45,7 +46,7 @@ export function person(coat: number, hair=0x573e31, hat=false) {
   capsule(g,.072,.08,0,1.57,0,skin);
   const head=capsule(g,.175,.045,0,1.76,0,skin,.94,.88);
   head.scale.y=1.1;
-  const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.181,16,12,0,Math.PI*2,0,Math.PI*.65),material(hair));hairCap.position.set(0,1.81,-.015);hairCap.scale.set(.97,1,.9);g.add(hairCap);hairCap.castShadow=true;
+  const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.181,16,12,0,Math.PI*2,0,Math.PI*.65),material(hair));hairCap.name='hair';hairCap.position.set(0,1.81,-.015);hairCap.scale.set(.97,1,.9);g.add(hairCap);hairCap.castShadow=true;
   for(const x of [-.175,.175])capsule(g,.037,.015,x,1.76,0,skin,.65,.8);
   for(const x of [-.061,.061]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6),material(0x353830));eye.position.set(x,1.795,.152);g.add(eye);}
   capsule(g,.029,.025,0,1.745,.161,skin,.7,1.2);
@@ -57,14 +58,28 @@ export function person(coat: number, hair=0x573e31, hat=false) {
     cylinder(g,.31,.31,.035,0,1.94,0,0xb6a17a,32);
     cylinder(g,.19,.22,.18,0,2.04,0,0xc6b18a,24);
     cylinder(g,.224,.224,.035,0,1.965,0,0x6e5440,24);
-    round(g,.38,.48,.2,0,1.2,-.255,0x84664a);
-    round(g,.29,.22,.065,0,1.12,-.37,0xa3835e);
-    for(const x of [-.17,.17])round(g,.04,.47,.035,x,1.25,.16,0x7c6650);
+    round(g,.38,.48,.2,0,1.2,-.255,backpack);
+    round(g,.29,.22,.065,0,1.12,-.37,new THREE.Color(backpack).offsetHSL(0,.05,.18).getHex());
+    for(const x of [-.17,.17])round(g,.04,.47,.035,x,1.25,.16,new THREE.Color(backpack).offsetHSL(0,.02,.05).getHex());
   }
   return g;
 }
+// The playable adventurer is a fully modeled low-poly character, with the
+// supplied reference used as the color and silhouette guide rather than as a
+// flat image in the scene.
+export function playerCharacter(custom:Partial<CharacterCustomization>={}) {
+  const style:CharacterCustomization={jacket:0x5f8f83,shirt:0xc66b3f,backpack:0xc87935,hair:0x5a3c2c,hat:true,hairstyle:'short',accessory:'none',...custom};
+  const g=person(style.jacket,style.hair,style.hat,style.backpack);
+  const shirt=new THREE.Mesh(new RoundedBoxGeometry(.29,.5,.09,2,.035),material(style.shirt));shirt.position.set(0,1.25,.19);shirt.castShadow=true;g.add(shirt);
+  const hair=g.getObjectByName('hair');if(hair&&style.hairstyle==='bob')hair.scale.set(1.1,1.15,1.08);
+  if(style.accessory==='scarf'){const scarf=new THREE.Mesh(new RoundedBoxGeometry(.31,.09,.08,2,.025),material(0x6b9c84));scarf.position.set(0,1.48,.22);scarf.castShadow=true;g.add(scarf);}
+  if(style.accessory==='badge'){const badge=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.025,16),material(0xe6c269));badge.rotation.x=Math.PI/2;badge.position.set(.18,1.34,.245);g.add(badge);}
+  g.scale.setScalar(1.08);g.userData.isPlayerCharacter=true;return g;
+}
 export function animatePerson(g:THREE.Group, time:number, speed:number) {
-  const legs=g.getObjectByName('legs')!;legs.children.forEach((l,i)=>l.rotation.x=Math.sin(time*9+i*Math.PI)*.62*speed);
+  const legs=g.getObjectByName('legs');
+  if(!legs)return;
+  legs.children.forEach((l,i)=>l.rotation.x=Math.sin(time*9+i*Math.PI)*.62*speed);
   let i=0;g.children.filter(c=>c.name==='arm').forEach(a=>{a.rotation.x=Math.sin(time*9+i++*Math.PI)*.5*speed;});
 }
 export function createWorld(scene: THREE.Scene) {
@@ -160,6 +175,15 @@ export function createWorld(scene: THREE.Scene) {
  for(const [x,z,w] of [[-20,27,13],[18,31,18],[-24,12,8]] ) {for(let i=0;i<=w;i++)box(terrain,.12,.95,.14,x+i-w/2,.48,z,0xeee2bf);box(terrain,w,.12,.1,x,.38,z,0xf1e5c4);box(terrain,w,.12,.1,x,.76,z,0xf1e5c4);addCollider(x,z,w,.2,1);}
  const parkSign=sign('WILLOW PARK','#f4e8c9','#57725a',2.4,.5);parkSign.position.set(11,1.6,15);terrain.add(parkSign);cylinder(terrain,.07,.09,1.5,11,.75,15,0x795d3f);
  const townSign=sign('Willowbrook','#f5e5bc','#3d5d4c',3.4,.8);townSign.position.set(-5,2,27);townSign.rotation.y=.25;terrain.add(townSign);for(const x of [-6.25,-3.75])cylinder(terrain,.09,.11,2,x,1,27,0x7c6246);
+ // Small hand-painted wayfinding boards make the compact district read as a route.
+ const routeSign=(label:string,x:number,z:number,rotation=0)=>{const board=sign(label,'#fff0cf','#4d6a57',2.6,.48);board.position.set(x,1.7,z);board.rotation.y=rotation;terrain.add(board);for(const dx of [-.95,.95])cylinder(terrain,.055,.075,1.55,x+Math.cos(rotation)*dx,.78,z-Math.sin(rotation)*dx,0x7b6249,12);};
+ routeSign('MARKET LANE  →',-1,-11,0);
+ routeSign('RIVERSIDE  →',29,8,Math.PI/2);
+ routeSign('FOREST PATH  ↗',28,29,.2);
+ const notice=sign('TOWN NOTICE BOARD','#fff0cf','#68785a',2.9,.56);notice.position.set(-5,1.6,-1.8);notice.rotation.y=Math.PI;terrain.add(notice);box(terrain,2.95,.08,.12,-5,.84,-1.8,0x76583f);for(const x of [-6.1,-3.9])cylinder(terrain,.065,.08,1.55,x,.78,-1.8,0x76583f,12);
+ // A pale gravel spur leads the eye from the square toward the river walk.
+ box(terrain,3.5,.035,20,31,.055,17,0xdacdb0);
+ for(const z of [10,14,18,22,26])box(terrain,2.5,.06,.42,33,.105,z,0xb99972);
  // Bunting strung between the shops.
  const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(-8,4.4,-11),new THREE.Vector3(0,3.6,-11),new THREE.Vector3(8,4.4,-11)]);const rope=new THREE.Mesh(new THREE.TubeGeometry(curve,24,.025,4,false),material(0x7d7055));terrain.add(rope);
  for(let i=0;i<15;i++){const p=curve.getPoint((i+.5)/15);const flag=new THREE.Mesh(new THREE.ConeGeometry(.23,.48,3),material([0xcd8667,0xe4c26f,0x7da799][i%3]));flag.rotation.z=Math.PI;flag.position.copy(p).y-=.2;terrain.add(flag);}
