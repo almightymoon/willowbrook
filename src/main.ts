@@ -54,7 +54,7 @@ type Save={version:number;seeds:number[];stage:number;minutes:number;days:number
 let collected=new Set<number>(),stage=0,minutes=9*60+41,days=1,saveAvailable=true;
 try{const saved=JSON.parse(localStorage.getItem('willowbrook-save')||'null') as Save|null;if(saved&&saved.version===1){collected=new Set(saved.seeds.filter(n=>Number.isInteger(n)&&n>=0&&n<5));stage=Math.max(0,Math.min(4,saved.stage));minutes=saved.minutes;days=saved.days;}}catch{saveAvailable=false;}
 world.seeds.forEach((s,i)=>s.visible=!collected.has(i));
-const keys=new Set<string>();let yaw=.06,pitch=.27,distance=10.5,vertical=0,grounded=true,walkTime=0,elapsed=0,daylight=1,paused=false,dialogue=false,hasMoved=false,hudUntil=Number.POSITIVE_INFINITY,nearest: {kind:'npc';npc:Resident}|{kind:'door';door:Door}|{kind:'seed';index:number}|{kind:'player';player:RemotePlayer}|null=null;
+const keys=new Set<string>();let yaw=.06,pitch=.20,distance=7.8,vertical=0,grounded=true,walkTime=0,elapsed=0,daylight=1,paused=false,dialogue=false,hasMoved=false,hudUntil=Number.POSITIVE_INFINITY,nearest: {kind:'npc';npc:Resident}|{kind:'door';door:Door}|{kind:'seed';index:number}|{kind:'player';player:RemotePlayer}|null=null;
 let velocity=new THREE.Vector2(),touchMove=new THREE.Vector2(),touchRun=false,joystickPointer:number|null=null,dragging=false,dragTravel=0,lastX=0,lastY=0,lastTouchAt=0,toastTimer=0,sensitivity=.003,autoCycle=true;
 const focus=new THREE.Vector3(),desired=new THREE.Vector3(),cameraRay=new THREE.Raycaster();
 function wakeHud(duration=2400){hudUntil=performance.now()+duration;$('#viewport').classList.remove('hud-hidden');}
@@ -170,7 +170,7 @@ window.addEventListener('pointerup',()=>{dragging=false;});
 canvas.addEventListener('click',e=>{if((e as MouseEvent).detail===0||performance.now()-lastTouchAt<500||e instanceof PointerEvent&&e.pointerType==='touch')return;if(dragTravel<4&&!paused&&!dialogue&&!document.pointerLockElement){try{const result=canvas.requestPointerLock() as unknown as Promise<void>|undefined;result?.catch(()=>toast('Drag the mouse to look around.'));}catch{toast('Drag the mouse to look around.');}}});
 document.addEventListener('pointerlockerror',()=>toast('Drag the mouse to look around.'));
 document.addEventListener('pointerlockchange',()=>{$('#viewport').classList.toggle('locked',document.pointerLockElement===canvas);keys.clear();});
-canvas.addEventListener('wheel',e=>{e.preventDefault();distance=THREE.MathUtils.clamp(distance+e.deltaY*.012,5,19);},{passive:false});canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('wheel',e=>{e.preventDefault();distance=THREE.MathUtils.clamp(distance+e.deltaY*.012,4,16);},{passive:false});canvas.addEventListener('contextmenu',e=>e.preventDefault());
 const joystick=$('#joystick'),joystickStick=$('#joystick-stick');
 function updateJoystick(e:PointerEvent){const r=joystick.getBoundingClientRect(),radius=Math.min(r.width,r.height)*.36,dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),length=Math.hypot(dx,dy),scale=Math.min(1,radius/Math.max(radius,length));touchMove.set(dx*scale/radius,dy*scale/radius);joystickStick.style.transform=`translate(calc(-50% + ${dx*scale}px),calc(-50% + ${dy*scale}px))`;}
 function resetJoystick(){touchMove.set(0,0);joystickPointer=null;joystickStick.style.transform='translate(-50%,-50%)';}
@@ -193,12 +193,12 @@ function updateMovement(dt:number){
  if(vertical<0){for(const b of world.colliders){if(b.enabled&&!b.enabled())continue;if(Math.abs(player.position.x-b.x)<b.w/2+.2&&Math.abs(player.position.z-b.z)<b.d/2+.2&&player.position.y>=b.top&&nextY<=b.top)floor=Math.max(floor,b.top+.09);}}
  player.position.y=Math.max(floor,nextY);if(player.position.y<=floor){vertical=0;grounded=true;}}
  else {let supported=player.position.y<=.14;if(!supported)supported=world.colliders.some(b=>(!b.enabled||b.enabled())&&Math.abs(player.position.x-b.x)<b.w/2+.25&&Math.abs(player.position.z-b.z)<b.d/2+.25&&Math.abs(player.position.y-b.top-.09)<.15);if(!supported){grounded=false;vertical=0;}}
- const moving=velocity.length()>.15;if(moving){hudUntil=performance.now()+1400;walkTime+=dt*(speed>4?1.5:1);const angle=Math.atan2(velocity.x,velocity.y);player.rotation.y+=Math.atan2(Math.sin(angle-player.rotation.y),Math.cos(angle-player.rotation.y))*(1-Math.exp(-dt*15));if(!hasMoved){hasMoved=true;$('#welcome').style.opacity='0';}}
+ const moving=velocity.length()>.15;if(moving){walkTime+=dt*(speed>4?1.5:1);const angle=Math.atan2(velocity.x,velocity.y);player.rotation.y+=Math.atan2(Math.sin(angle-player.rotation.y),Math.cos(angle-player.rotation.y))*(1-Math.exp(-dt*15));if(!hasMoved){hasMoved=true;$('#welcome').style.opacity='0';}}
  animatePerson(player,walkTime,moving&&grounded?Math.min(1,velocity.length()/3):0);shadow.position.set(player.position.x,.105,player.position.z);shadow.scale.setScalar(Math.max(.5,1-player.position.y*.08));
  audio.update(dt,daylight,moving&&grounded,walkTime);
 }
 function updateCamera(dt:number,instant=false){
- focus.copy(player.position).y+=1.25;desired.set(Math.sin(yaw)*Math.cos(pitch)*distance,Math.sin(pitch)*distance,Math.cos(yaw)*Math.cos(pitch)*distance).add(focus);
+ focus.copy(player.position).y+=1.1;desired.set(Math.sin(yaw)*Math.cos(pitch)*distance,Math.sin(pitch)*distance,Math.cos(yaw)*Math.cos(pitch)*distance).add(focus);
  // Keep the camera outside solid buildings and close enough to see indoor rooms.
  const rayDirection=desired.clone().sub(focus);const rayLength=rayDirection.length();cameraRay.set(focus,rayDirection.normalize());let safe=rayLength;let roomBuilding:(typeof world.buildings)[number]|undefined;
  for(const b of world.buildings){if(Math.abs(player.position.x-b.x)<b.w/2&&Math.abs(player.position.z-b.z)<b.d/2){b.roof.visible=false;roomBuilding=b;continue;}b.roof.visible=true;
