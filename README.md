@@ -1,6 +1,6 @@
 # Willowbrook
 
-A small, playable third-person town exploration game, built with TypeScript, Vite, and Three.js. All world geometry and audio are generated locally; no paid assets, API keys, or game server are needed. The interface uses local system fonts; the game makes no external asset requests.
+A small, playable third-person town exploration game, built with TypeScript, Vite, and Three.js. World geometry and audio are generated locally; no paid assets, API keys, or game server are needed. The interface uses local system fonts. Scanned surface textures and the lighting environment are bundled locally, so gameplay makes no external asset requests.
 
 ## Run
 
@@ -34,7 +34,7 @@ Desktop keyboard and mouse are required for gameplay. The interface adapts to na
 
 Eight enterable, furnished buildings, including The Honeycomb bakery and Fern & Fable; a fountain square, cobbled lanes, park pond, trees, flower beds, benches, lamps, six residents, and five collectible sunseeds. The three-chapter quest takes you from Mira to Bram to Theo. You can keep exploring after completing it.
 
-Closed doors and walls have collision. Roofs disappear when you enter buildings. The camera zooms inward when a building obstructs its view. Movement includes acceleration, running, gravity, jumping, and landing on low obstacles. The world has bounded edges.
+Closed doors and walls have collision. Roofs disappear when you enter buildings and the camera rises to give a clear view of the furnished room. The camera zooms inward when a building obstructs its view. Movement includes acceleration, running, gravity, jumping, and landing on low obstacles. The world has bounded edges.
 
 A full day lasts 12 minutes of active play. The settings panel offers morning, golden hour, night, a cycle toggle, graphics quality, and mouse sensitivity. Lamps and windows glow at night. Wind, bird/chirping tones, footsteps, and interaction chimes use Web Audio, enabled by the first user gesture.
 
@@ -59,3 +59,11 @@ Browser screenshots and the verification report are saved under `tests/`. Sound 
 - `src/style.css`: responsive game interface.
 
 Static meshes are merged by material to reduce draw calls. There are no backend services or external 3D models.
+
+## Realistic graphics pass
+
+The town uses physically based stone paving, painted plaster, ceramic roof tiles, timber, grass, and bark with color, normal, and roughness maps. HDR environment lighting adds natural reflections; the sky, sunlight, and exposure follow the day cycle. Tree crowns use layered alpha-cut leaves with wind, and dense instanced grass softens the ground. Water has animated surface normals, lanterns have open frames and warm light, and the people use smoother, more natural proportions.
+
+The environment textures and HDRI are CC0 assets from Poly Haven. Exact sources and download URLs are recorded in `public/textures/credits.json`. `scripts/download-materials.py` prepares the bundled 1K texture assets.
+
+Sources: [Poly Haven texture library](https://polyhaven.com/textures), [Green Point Park environment](https://polyhaven.com/a/green_point_park), [Poly Haven license](https://polyhaven.com/license).

@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-09T14:14:32.570Z",
+  "checks": [
+    "High quality daytime rendering",
+    "High quality nighttime rendering",
+    "Opens and closes: The Honeycomb",
+    "Opens and closes: Fern & Fable",
+    "Opens and closes: Mira’s cottage",
+    "Opens and closes: The little post",
+    "Opens and closes: Rose cottage",
+    "Opens and closes: Juniper house",
+    "Opens and closes: Orchard house",
+    "Opens and closes: Ivy cottage",
+    "Conversation: Mira",
+    "Conversation: Bram",
+    "Conversation: Theo",
+    "Conversation: Elsie",
+    "Conversation: Otto",
+    "Conversation: Pip",
+    "Furnished interior rendering",
+    "Automatic day cycle advances",
+    "Keyboard help and close button",
+    "Sound button toggles ambience",
+    "Mouse sensitivity changes camera response",
+    "All 19 graphics assets load without shader errors"
+  ],
+  "errors": []
+}

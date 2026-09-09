@@ -12,7 +12,7 @@ const wait=async(fn,arg)=>page.waitForFunction(fn,arg,{timeout:60000});
 const tp=async(x,z,yaw=0)=>{await page.evaluate(([x,z,yaw])=>{window.__town.teleport(x,z);window.__town.setCamera(yaw);},[x,z,yaw]);};
 const hold=async(key,fn)=>{await page.bringToFront();await page.keyboard.down(key);try{await wait(fn);}finally{await page.keyboard.up(key);}};
 try{
- await page.goto(process.env.TOWN_URL||'http://localhost:4173/?test',{waitUntil:'domcontentloaded'});await wait(()=>window.__town);
+ await page.goto(process.env.TOWN_URL||'http://localhost:4173/?test',{waitUntil:'domcontentloaded'});await wait(()=>window.__town?.state().assetsReady);
  assert.equal((await state()).stage,0);assert.ok((await state()).render.triangles>10000);ok('3D world renders without a loading screen');
  await page.screenshot({timeout:120000,path:'tests/town-day.png'});
  await page.locator('#settings').click();await page.selectOption('#quality','low');await page.locator('#back').click();
@@ -45,11 +45,11 @@ try{
  await tp(-9,-9);await page.keyboard.press('KeyE');await page.locator('#dialogue-next').click();assert.equal((await state()).stage,3);ok('Bram gives the warm loaf');
  await page.keyboard.press('KeyJ');assert.match(await page.locator('#modal').textContent(),/1 warm loaf/);await page.keyboard.press('Escape');ok('Journal shows quest and satchel; Escape closes it');
  await tp(16,24.4);await page.keyboard.press('KeyE');await page.locator('#dialogue-next').click();assert.equal((await state()).stage,4);ok('Delivering bread completes all three quest chapters');
- await page.reload({waitUntil:'domcontentloaded'});await wait(()=>window.__town);assert.equal((await state()).stage,4);assert.equal((await state()).seeds.length,5);ok('Quest and collectible progress survive reload');
+ await page.reload({waitUntil:'domcontentloaded'});await wait(()=>window.__town?.state().assetsReady);assert.equal((await state()).stage,4);assert.equal((await state()).seeds.length,5);ok('Quest and collectible progress survive reload');
  const oldNpc=(await state()).npcs.find(n=>n.name==='Elsie').position;await wait(old=>JSON.stringify(window.__town.state().npcs.find(n=>n.name==='Elsie').position)!==JSON.stringify(old),oldNpc);const newNpc=(await state()).npcs.find(n=>n.name==='Elsie').position;assert.notDeepEqual(oldNpc,newNpc);ok('Residents wander around town');
  await page.keyboard.press('KeyM');assert.equal((await state()).audio.enabled,false);await page.keyboard.press('KeyM');assert.equal((await state()).audio.enabled,true);assert.equal((await state()).audio.state,'running');ok('Ambient audio starts and mute toggles correctly');
  await page.locator('#settings').click();await page.selectOption('#daytime','1320');await page.locator('#back').click();await wait(()=>window.__town.state().daylight<.2);assert.match(await page.locator('#time').textContent(),/PM/);ok('Night setting updates lighting and the clock');await page.screenshot({timeout:120000,path:'tests/town-night.png'});
- await page.locator('#settings').click();await page.locator('#cycle').uncheck();await page.selectOption('#daytime','580');await page.selectOption('#quality','low');await page.locator('#back').click();const frozen=(await state()).minutes;await page.waitForTimeout(600);assert.equal((await state()).minutes,frozen);ok('Day cycle can pause and low graphics setting works');
+ await page.locator('#settings').click();await page.locator('#cycle').uncheck();await page.selectOption('#daytime',{label:'Morning'});await page.selectOption('#quality','low');await page.locator('#back').click();const frozen=(await state()).minutes;await page.waitForTimeout(600);assert.equal((await state()).minutes,frozen);ok('Day cycle can pause and low graphics setting works');
  await page.locator('#help').click();assert.match(await page.locator('#modal').textContent(),/Mouse/);const p1=(await state()).position;await page.keyboard.down('KeyW');await page.waitForTimeout(400);await page.keyboard.up('KeyW');assert.deepEqual((await state()).position,p1);await page.locator('#back').click();ok('Help lists controls and menus pause the game');
  await page.setViewportSize({width:690,height:800});await page.screenshot({timeout:120000,path:'tests/town-narrow.png'});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);ok('Narrow viewport stays within the screen');
  assert.deepEqual(errors,[]);ok('No uncaught browser errors during the full playthrough');

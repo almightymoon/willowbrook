@@ -1,0 +1,146 @@
+[
+  {
+    "name": "paving",
+    "source": "https://polyhaven.com/a/cobblestone_floor_001",
+    "license": "CC0",
+    "files": [
+      {
+        "file": "paving-color.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cobblestone_floor_001/cobblestone_floor_001_diff_1k.jpg",
+        "bytes": 626906
+      },
+      {
+        "file": "paving-normal.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cobblestone_floor_001/cobblestone_floor_001_nor_gl_1k.jpg",
+        "bytes": 995098
+      },
+      {
+        "file": "paving-roughness.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cobblestone_floor_001/cobblestone_floor_001_rough_1k.jpg",
+        "bytes": 403395
+      }
+    ]
+  },
+  {
+    "name": "plaster",
+    "source": "https://polyhaven.com/a/painted_plaster_wall",
+    "license": "CC0",
+    "files": [
+      {
+        "file": "plaster-color.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_diff_1k.jpg",
+        "bytes": 686726
+      },
+      {
+        "file": "plaster-normal.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_nor_gl_1k.jpg",
+        "bytes": 900461
+      },
+      {
+        "file": "plaster-roughness.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_rough_1k.jpg",
+        "bytes": 354762
+      }
+    ]
+  },
+  {
+    "name": "roof",
+    "source": "https://polyhaven.com/a/ceramic_roof_01",
+    "license": "CC0",
+    "files": [
+      {
+        "file": "roof-color.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/ceramic_roof_01/ceramic_roof_01_diff_1k.jpg",
+        "bytes": 547031
+      },
+      {
+        "file": "roof-normal.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/ceramic_roof_01/ceramic_roof_01_nor_gl_1k.jpg",
+        "bytes": 675803
+      },
+      {
+        "file": "roof-roughness.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/ceramic_roof_01/ceramic_roof_01_rough_1k.jpg",
+        "bytes": 281981
+      }
+    ]
+  },
+  {
+    "name": "wood",
+    "source": "https://polyhaven.com/a/brown_planks_03",
+    "license": "CC0",
+    "files": [
+      {
+        "file": "wood-color.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_planks_03/brown_planks_03_diff_1k.jpg",
+        "bytes": 570668
+      },
+      {
+        "file": "wood-normal.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_planks_03/brown_planks_03_nor_gl_1k.jpg",
+        "bytes": 516860
+      },
+      {
+        "file": "wood-roughness.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_planks_03/brown_planks_03_rough_1k.jpg",
+        "bytes": 222197
+      }
+    ]
+  },
+  {
+    "name": "grass",
+    "source": "https://polyhaven.com/a/leafy_grass",
+    "license": "CC0",
+    "files": [
+      {
+        "file": "grass-color.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/leafy_grass/leafy_grass_diff_1k.jpg",
+        "bytes": 1195394
+      },
+      {
+        "file": "grass-normal.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/leafy_grass/leafy_grass_nor_gl_1k.jpg",
+        "bytes": 1466049
+      },
+      {
+        "file": "grass-roughness.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/leafy_grass/leafy_grass_rough_1k.jpg",
+        "bytes": 511385
+      }
+    ]
+  },
+  {
+    "name": "bark",
+    "source": "https://polyhaven.com/a/tree_bark_03",
+    "license": "CC0",
+    "files": [
+      {
+        "file": "bark-color.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/tree_bark_03/tree_bark_03_diff_1k.jpg",
+        "bytes": 1046404
+      },
+      {
+        "file": "bark-normal.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/tree_bark_03/tree_bark_03_nor_gl_1k.jpg",
+        "bytes": 1255491
+      },
+      {
+        "file": "bark-roughness.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/tree_bark_03/tree_bark_03_rough_1k.jpg",
+        "bytes": 464563
+      }
+    ]
+  },
+  {
+    "name": "sky",
+    "source": "https://polyhaven.com/a/green_point_park",
+    "license": "CC0",
+    "files": [
+      {
+        "file": "sky-environment.hdr",
+        "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/green_point_park_1k.hdr",
+        "bytes": 1664799
+      }
+    ]
+  }
+]
