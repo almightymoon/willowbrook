@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. For a production build, run `npm run build`, then `npm run preview`. The `dist/` folder can be hosted on a static web server.
+This starts Vite on port 5173 and the local Willowbrook social server on port 5174. Open the local URL printed by Vite. For a production build, run `npm run build`, then `npm run preview`; the multiplayer server still needs to run separately with `npm run social-server`.
 
 ## Controls
 
@@ -39,6 +39,10 @@ Closed doors and walls have collision. Roofs disappear when you enter buildings 
 A full day lasts 12 minutes of active play. The settings panel offers morning, golden hour, night, a cycle toggle, graphics quality, and mouse sensitivity. Lamps and windows glow at night. Wind, bird/chirping tones, footsteps, and interaction chimes use Web Audio, enabled by the first user gesture. After you start moving, the quest card and control strip gently recede so the scene has room to breathe; a key press or interaction brings them back.
 
 Quest progress, collected items, day, and time are stored in browser localStorage. Each visit starts at the welcoming town entrance. Menus and conversations pause the simulation. To start over, clear this site's localStorage.
+
+## Social vertical slice
+
+The first multiplayer slice uses a small native WebSocket server with no third-party account or game assets. Create an account or continue as a guest from the Profile panel, customize jacket, shirt, backpack, hair, hat, hairstyle, and accessory, then reconnect later to restore the saved profile. Other connected players appear in the town with interpolated movement and nameplates. Nearby, global, and direct text chat are available from the Chat panel; proximity voice uses WebRTC signaling, distance-based volume, mute, and push-to-talk with `V`. Block and report controls are available beside each online neighbor. Passwords are stored as salted scrypt hashes in the local `data/profiles.json` file, and private credentials are never broadcast.
 
 ## Verification
 

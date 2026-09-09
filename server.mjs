@@ -13,7 +13,7 @@ const sessions=new Map();
 const clients=new Set();
 const customDefaults={jacket:0x5f8f83,shirt:0xc66b3f,backpack:0xc87935,hair:0x5a3c2c,hat:true,hairstyle:'short',accessory:'none'};
 const cleanName=v=>String(v||'').trim().replace(/[^a-zA-Z0-9 _-]/g,'').slice(0,18);
-const cleanCustom=v=>({...customDefaults,...(v&&typeof v==='object'?v:{})});
+const cleanCustom=v=>{const input=v&&typeof v==='object'?v:{};const color=(key)=>Number.isInteger(input[key])&&input[key]>=0&&input[key]<=0xffffff?input[key]:customDefaults[key];return {jacket:color('jacket'),shirt:color('shirt'),backpack:color('backpack'),hair:color('hair'),hat:Boolean(input.hat),hairstyle:input.hairstyle==='bob'?'bob':'short',accessory:['scarf','badge'].includes(input.accessory)?input.accessory:'none'};};
 const id=()=>crypto.randomUUID();
 function saveProfiles(){fs.writeFileSync(profileFile,JSON.stringify(profiles,null,2));}
 function hash(password,salt=crypto.randomBytes(16).toString('hex')){return {salt,hash:crypto.scryptSync(String(password),salt,32).toString('hex')};}
@@ -72,4 +72,6 @@ function parse(c,chunk){c.buffer=Buffer.concat([c.buffer,chunk]);while(c.buffer.
 function upgrade(req,socket){const key=req.headers['sec-websocket-key'];if(!key){socket.destroy();return;}const accept=crypto.createHash('sha1').update(`${key}258EAFA5-E914-47DA-95CA-C5AB0DC85B11`).digest('base64');socket.write(`HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ${accept}\r\n\r\n`);const c={socket,buffer:Buffer.alloc(0),closed:false,user:null,state:{x:0,z:18,y:.13,rotation:Math.PI,walking:false,running:false}};clients.add(c);socket.on('data',chunk=>parse(c,chunk));socket.on('close',()=>{c.closed=true;clients.delete(c);if(c.user)broadcast({type:'player-left',playerId:c.user.id});});socket.on('error',()=>{c.closed=true;clients.delete(c);});}
 const server=http.createServer((req,res)=>{res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({name:'Willowbrook social server',online:[...clients].filter(c=>c.user).length}));});
 server.on('upgrade',upgrade);server.listen(port,'0.0.0.0',()=>console.log(`Willowbrook social server listening on ws://localhost:${port}`));
-const vite=spawn(process.execPath,[path.resolve('node_modules/vite/bin/vite.js'),'--host','0.0.0.0'],{stdio:'inherit'});process.on('SIGINT',()=>{vite.kill('SIGINT');server.close();process.exit(0);});
+const socialOnly=process.argv.includes('--social-only');
+const vite=socialOnly?null:spawn(process.execPath,[path.resolve('node_modules/vite/bin/vite.js'),'--host','0.0.0.0'],{stdio:'inherit'});
+process.on('SIGINT',()=>{vite?.kill('SIGINT');server.close();process.exit(0);});
