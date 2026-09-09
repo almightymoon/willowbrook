@@ -49,7 +49,7 @@ function handle(c,msg){
  if(msg.type==='state'){c.state={...c.state,x:Number(msg.x)||0,z:Number(msg.z)||0,y:Number(msg.y)||0,rotation:Number(msg.rotation)||0,walking:Boolean(msg.walking),running:Boolean(msg.running)};broadcast({type:'player-state',player:publicPlayer(c)},c);return;}
  if(msg.type==='profile'){
   c.user.customization=cleanCustom(msg.customization);
-  if(!c.user.guest){const record=profiles[c.user.username.toLowerCase()];if(record){record.customization=c.user.customization;saveProfiles();}}
+  if(!c.user.guest){const record=profiles[c.accountKey];if(record){record.customization=c.user.customization;saveProfiles();}}
   broadcast({type:'player-profile',player:publicPlayer(c)});return;
  }
  if(msg.type==='chat'){
@@ -64,7 +64,7 @@ function handle(c,msg){
  if(msg.type==='voice-offer'||msg.type==='voice-answer'||msg.type==='voice-ice'){const target=[...clients].find(x=>x.user?.id===String(msg.to));if(target)send(target,{...msg,from:c.user.id});}
 }
 function authenticate(c,record,resumed=false){
- c.user={id:record.id,username:record.username,customization:cleanCustom(record.customization)};c.state={x:0,z:18,y:.13,rotation:Math.PI,walking:false,running:false};
+ c.accountKey=record.guest?null:Object.keys(profiles).find(key=>profiles[key]===record);c.user={id:record.guest?record.id:`${record.id}-${id().slice(0,8)}`,username:record.username,customization:cleanCustom(record.customization)};c.state={x:0,z:18,y:.13,rotation:Math.PI,walking:false,running:false};
  const token=record.guest?null:(resumed?[...sessions].find(([,v])=>v.id===record.id)?.[0]||crypto.randomBytes(24).toString('hex'):crypto.randomBytes(24).toString('hex'));if(token)sessions.set(token,record);
  send(c,{type:'auth-ok',token,user:{id:c.user.id,username:c.user.username,customization:c.user.customization},players:playerList()});broadcast({type:'player-joined',player:publicPlayer(c)},c);
 }
